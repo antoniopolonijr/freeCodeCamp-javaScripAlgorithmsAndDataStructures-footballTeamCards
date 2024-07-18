@@ -174,11 +174,62 @@ const myFavoriteFootballTeam = {
   ],
 };
 
-Object.freeze(myFavoriteFootballTeam);
-const { sport, team, year, players } = myFavoriteFootballTeam;
+Object.freeze(myFavoriteFootballTeam); // freeze this object and prevent any changes being made to it.
+const { sport, team, year, players } = myFavoriteFootballTeam; // accessing properties from the myFavoriteFootballTeam object using The object destructuring syntax
 const { coachName } = myFavoriteFootballTeam.headCoach;
 
+// displaying the team's information on the screen
 typeOfSport.textContent = sport;
 teamName.textContent = team;
 worldCupYear.textContent = year;
 headCoach.textContent = coachName;
+
+// function that shows player cards based on the selections made by the user
+// Function parameters initialized with default value "players"
+const setPlayerCards = (arr = players) => {
+  playerCards.innerHTML += arr
+    .map(
+      ({ name, position, number, isCaptain, nickname }) =>
+        `
+        <div class="player-card">
+          <h2>${isCaptain ? "(Captain)" : ""} ${name}</h2>
+          <p>Position: ${position}</p>
+          <p>Number: ${number}</p>
+          <p>Nickname: ${nickname !== null ? nickname : "N/A"}</p>
+        </div>
+      `
+    )
+    .join(""); // remove the commas between each player-card
+};
+
+// detect when a user makes a selection from the playersDropdownList
+playersDropdownList.addEventListener("change", (e) => {
+  playerCards.innerHTML = "";
+
+  // check for the user's selection from the player dropdown menu and filter
+  switch (e.target.value) {
+    case "nickname": // user's selection
+      setPlayerCards(players.filter((player) => player.nickname !== null)); //filter out player cards that have a nickname
+      break;
+    case "forward":
+      setPlayerCards(players.filter((player) => player.position === "forward")); //filter out player cards that the position is forward
+      break;
+    case "midfielder":
+      setPlayerCards(
+        players.filter((player) => player.position === "midfielder") //filter out player cards that the position is midfielder
+      );
+      break;
+    case "defender":
+      setPlayerCards(
+        players.filter((player) => player.position === "defender") //filter out player cards that the position is defender
+      );
+      break;
+    case "goalkeeper":
+      setPlayerCards(
+        players.filter((player) => player.position === "goalkeeper") //filter out player cards that the position is goalkeeper
+      );
+      break;
+    default: // clause if none of the other case clauses match the user selection.
+      setPlayerCards();
+  }
+});
